@@ -54,4 +54,28 @@ RSpec.describe "Merchant Coupon endpoints" do
       expect(result[:attributes][:merchant_id]).to eq(merchant1.id)
     end
   end
+
+  it "Creates a new coupon for a merchant" do
+    merchant = Merchant.create!(name: "Test Merchant")
+    coupon_params = {name: "New Sale", unique_code: "NS2025", percent_off: 35.0, dollar_off: nil, merchant_id: merchant.id}
+
+    post "/api/v1/merchants/#{merchant.id}/coupons", params: coupon_params
+    expect(response.status).to eq(201)
+
+    result = JSON.parse(response.body, symbolize_names: true)[:data] 
+
+    expect(result).to have_key(:id)
+    expect(result[:id]).to be_a(String)
+
+    expect(result).to have_key(:type)
+    expect(result[:type]).to be_a(String)
+
+    expect(result).to have_key(:attributes)
+    expect(result[:attributes]).to have_key(:name)
+    expect(result[:attributes][:name]).to be_a(String)
+    expect(result[:attributes][:unique_code]).to be_a(String)
+    expect(result[:attributes][:percent_off]).to be_a(String).or(be_nil)
+    expect(result[:attributes][:dollar_off]).to be_a(Float).or(be_nil)
+    expect(result[:attributes][:merchant_id]).to eq(merchant.id)
+  end
 end
