@@ -17,6 +17,6 @@ system(cmd)
 # merchant4 = Merchant.create!(name: "Test Merchant4")
 
 # coupon = Coupon.create(name: "Winter Sale", unique_code: "WS2025", percent_off: 15.0, dollar_off: nil, merchant: merchant1)
-# coupon = Coupon.create(name: "Spring Sale", unique_code: "SPS2025", percent_off: nil, dollar_off: 25.00, merchant: merchant2)
+# coupon = Coupon.create(name: "Spring Sale", unique_code: "SPS2025", percent_off: nil, dollar_off: 25.00, merchant: merchant1)
 # coupon = Coupon.create(name: "Summer Sale", unique_code: "SUS2025", percent_off: 10.0, dollar_off: nil, merchant: merchant3)
 # coupon = Coupon.create(name: "Fall Sale", unique_code: "FS2025", percent_off: nil, dollar_off: 50.00, merchant: merchant4)
