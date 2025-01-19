@@ -17,9 +17,16 @@ class Api::V1::Merchants::CouponsController < ApplicationController
     render json: CouponSerializer.new(coupons), status: :created
   end
 
+  def update
+    merchant = Merchant.find(params[:merchant_id])
+    coupon = merchant.coupons.find(params[:id])
+    coupon.update(coupon_params)
+    render json: CouponSerializer.new(coupon), status: :ok
+  end
+
   private
 
   def coupon_params
-    params.permit(:name, :unique_code, :percent_off, :dollar_off)
+    params.permit(:name, :unique_code, :percent_off, :dollar_off, :active)
   end
 end
