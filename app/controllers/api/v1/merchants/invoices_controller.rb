@@ -4,7 +4,7 @@ class Api::V1::Merchants::InvoicesController < ApplicationController
     if params[:status].present?
       invoices = merchant.invoices_filtered_by_status(params[:status])
     else
-      invoices = merchant.invoices
+      invoices = merchant.add_coupon_invoices
     end
     render json: InvoiceSerializer.new(invoices)
   end

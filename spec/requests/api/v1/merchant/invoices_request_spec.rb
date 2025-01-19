@@ -58,4 +58,25 @@ RSpec.describe "Merchant invoices endpoints" do
     expect(json[:errors]).to be_a Array
     expect(json[:errors].first).to eq("Couldn't find Merchant with 'id'=100000")
   end
+
+  it "Return a merchants invoices and include the id of the coupon used (if one was used)" do
+    Invoice.delete_all
+    coupon1 = Coupon.create(name: "Winter Sale", unique_code: "WS2025", percent_off: 15.0, dollar_off: nil, merchant_id: @merchant2.id)
+    coupon2 = Coupon.create(name: "Spring Sale", unique_code: "SPS2025", percent_off: nil, dollar_off: 25.00, merchant_id:@merchant1.id)
+
+    invoice1 = Invoice.create!(customer_id: @customer1.id, merchant_id: @merchant2.id, coupon_id: coupon1.id, status: "shipped")
+    invoice2 = Invoice.create!(customer_id: @customer2.id, merchant_id:@merchant1.id, coupon_id: coupon2.id, status: "shipped")
+    invoice3 = Invoice.create!(customer_id: @customer2.id, merchant_id:@merchant1.id, coupon_id: coupon1.id, status: "shipped")
+
+    get "/api/v1/merchants/#{@merchant1.id}/invoices"
+    expect(response.status).to eq(200)
+
+    results = JSON.parse(response.body, symbolize_names: true)[:data]
+    
+    expect(results.count).to eq(2)
+    results.each do |result|
+      expect(result[:attributes][:merchant_id]).to eq(@merchant1.id)
+      expect(result[:attributes]).to have_key(:coupon_id)
+    end
+  end
 end

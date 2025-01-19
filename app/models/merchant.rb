@@ -33,7 +33,11 @@ class Merchant < ApplicationRecord
   end
 
   def invoices_filtered_by_status(status)
-    invoices.where(status: status)
+    invoices.where(status: status).includes(:coupon)
+  end
+
+  def add_coupon_invoices
+    invoices.includes(:coupon)
   end
 
   def self.find_all_by_name(name)
