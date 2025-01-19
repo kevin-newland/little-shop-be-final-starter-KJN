@@ -7,7 +7,11 @@ class Api::V1::Merchants::CouponsController < ApplicationController
 
   def index 
     merchant = Merchant.find(params[:merchant_id])
-    coupons = merchant.coupons.all
+    if params[:active].present?
+      coupons = merchant.coupons.filter_by_status(params[:active])
+    else
+      coupons = merchant.coupons.all
+    end
     render json: CouponSerializer.new(coupons)
   end
 
