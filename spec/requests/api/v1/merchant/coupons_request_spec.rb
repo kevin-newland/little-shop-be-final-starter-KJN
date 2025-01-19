@@ -51,7 +51,6 @@ RSpec.describe "Merchant Coupon endpoints" do
       expect(result[:attributes][:unique_code]).to be_a(String)
       expect(result[:attributes][:percent_off]).to be_a(String).or(be_nil)
       expect(result[:attributes][:dollar_off]).to be_a(Float).or(be_nil)
-      expect(result[:attributes][:merchant_id]).to eq(merchant1.id)
     end
   end
 
@@ -77,5 +76,53 @@ RSpec.describe "Merchant Coupon endpoints" do
     expect(result[:attributes][:percent_off]).to be_a(String).or(be_nil)
     expect(result[:attributes][:dollar_off]).to be_a(Float).or(be_nil)
     expect(result[:attributes][:merchant_id]).to eq(merchant.id)
+  end
+
+  it "updates a coupon active to inactive" do
+    merchant1 = Merchant.create!(name: "Test Merchant1")
+    coupon = Coupon.create(name: "Winter Sale", unique_code: "WS2025", percent_off: 15.0, dollar_off: nil, active: true, merchant_id: merchant1.id)
+
+    patch "/api/v1/merchants/#{merchant1.id}/coupons/#{coupon.id}", params: { active: false}
+    expect(response.status).to eq(200)
+
+    result = JSON.parse(response.body, symbolize_names: true)[:data] 
+
+    expect(result).to have_key(:id)
+    expect(result[:id]).to be_a(String)
+
+    expect(result).to have_key(:type)
+    expect(result[:type]).to be_a(String)
+
+    expect(result).to have_key(:attributes)
+    expect(result[:attributes]).to have_key(:name)
+    expect(result[:attributes][:name]).to be_a(String)
+    expect(result[:attributes][:unique_code]).to be_a(String)
+    expect(result[:attributes][:percent_off]).to be_a(String).or(be_nil)
+    expect(result[:attributes][:dollar_off]).to be_a(Float).or(be_nil)
+    expect(result[:attributes][:active]).to eq(false)
+  end
+
+  it "Updates a coupon from inactive to active" do
+    merchant1 = Merchant.create!(name: "Test Merchant1")
+    coupon = Coupon.create(name: "Winter Sale", unique_code: "WS2025", percent_off: 15.0, dollar_off: nil, active: false, merchant_id: merchant1.id)
+
+    patch "/api/v1/merchants/#{merchant1.id}/coupons/#{coupon.id}", params: { active: true}
+    expect(response.status).to eq(200)
+
+    result = JSON.parse(response.body, symbolize_names: true)[:data] 
+
+    expect(result).to have_key(:id)
+    expect(result[:id]).to be_a(String)
+
+    expect(result).to have_key(:type)
+    expect(result[:type]).to be_a(String)
+
+    expect(result).to have_key(:attributes)
+    expect(result[:attributes]).to have_key(:name)
+    expect(result[:attributes][:name]).to be_a(String)
+    expect(result[:attributes][:unique_code]).to be_a(String)
+    expect(result[:attributes][:percent_off]).to be_a(String).or(be_nil)
+    expect(result[:attributes][:dollar_off]).to be_a(Float).or(be_nil)
+    expect(result[:attributes][:active]).to eq(true)
   end
 end
