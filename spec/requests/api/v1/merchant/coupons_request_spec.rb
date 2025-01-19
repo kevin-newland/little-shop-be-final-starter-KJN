@@ -125,4 +125,34 @@ RSpec.describe "Merchant Coupon endpoints" do
     expect(result[:attributes][:dollar_off]).to be_a(Float).or(be_nil)
     expect(result[:attributes][:active]).to eq(true)
   end
+
+  it "When passed a query param, returns coupons filtered by inactive" do
+    merchant1 = Merchant.create!(name: "Test Merchant1")
+    coupon_active = Coupon.create(name: "Winter Sale", unique_code: "WS2025", percent_off: 15.0, dollar_off: nil, active: true, merchant_id: merchant1.id)
+    coupon_inactive = Coupon.create(name: "Spring Sale", unique_code: "SPS2025", percent_off: nil, dollar_off: 25.00, active: false,  merchant_id: merchant1.id)
+
+    get "/api/v1/merchants/#{merchant1.id}/coupons", params: {active: true}
+    expect(response.status).to eq(200)
+
+    result = JSON.parse(response.body, symbolize_names: true)[:data]
+
+    expect(result.count).to eq(1)
+    expect(result[0][:attributes][:name]).to eq(coupon_active.name)
+    expect(result[0][:attributes][:active]).to eq(true)
+  end
+
+  it "When passed a query param, returns coupons filtered by active" do
+    merchant1 = Merchant.create!(name: "Test Merchant1")
+    coupon_active = Coupon.create(name: "Winter Sale", unique_code: "WS2025", percent_off: 15.0, dollar_off: nil, active: true, merchant_id: merchant1.id)
+    coupon_inactive = Coupon.create(name: "Spring Sale", unique_code: "SPS2025", percent_off: nil, dollar_off: 25.00, active: false,  merchant_id: merchant1.id)
+
+    get "/api/v1/merchants/#{merchant1.id}/coupons", params: {active: false}
+    expect(response.status).to eq(200)
+
+    result = JSON.parse(response.body, symbolize_names: true)[:data]
+
+    expect(result.count).to eq(1)
+    expect(result[0][:attributes][:name]).to eq(coupon_inactive.name)
+    expect(result[0][:attributes][:active]).to eq(false)
+  end
 end
