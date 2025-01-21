@@ -39,4 +39,12 @@ class Api::V1::Merchants::CouponsController < ApplicationController
   def coupon_params
     params.permit(:name, :unique_code, :percent_off, :dollar_off, :active)
   end
+
+  def not_found(exception)
+    render json: {error: exception.message}, status: :not_found
+  end
+
+  def not_valid(exception)
+    render json: {error: exception.message}, status: :not_valid
+  end
 end

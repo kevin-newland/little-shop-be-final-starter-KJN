@@ -27,4 +27,13 @@ system(cmd)
 # invoice3 = Invoice.create!(customer_id: 12, merchant_id: merchant2.id, coupon_id: coupon2.id, status: "shipped")
 # invoice4 = Invoice.create!(customer_id: 12, merchant_id: merchant3.id, coupon_id: coupon3.id, status: "shipped")
 # 
-#coupon11 = Coupon.create!(name: "Winter Sale", unique_code: "sdvsdv", percent_off: 15.0, dollar_off: nil, merchant_id: 1)
+#
+# coupon11 = Coupon.create!(name: "Winter Sale", unique_code: "sdvsdv", percent_off: 15.0, dollar_off: nil, merchant_id: 1)
+# coupon12 = Coupon.create!(name: "Hagrid is awesome Sale", unique_code: "5181", percent_off: 15.0, dollar_off: nil, merchant_id: 1)
+# coupon13 = Coupon.create!(name: "Blowout Sale", unique_code: "5151", percent_off: 20.0, dollar_off: nil, merchant_id: 1)
+# coupon14 = Coupon.create!(name: "Vikings are bad Sale", unique_code: "8896", percent_off: nil, dollar_off: 10.00, merchant_id: 1)
+
+# coupon15 = Coupon.create!(name: "Holiday Sale", unique_code: "1548", percent_off: 15.0, dollar_off: nil, merchant_id: 2)
+# coupon16 = Coupon.create!(name: "Im Tired Sale", unique_code: "1861", percent_off: nil, dollar_off: 50, merchant_id: 2)
+# coupon17 = Coupon.create!(name: "Confused Sale", unique_code: "1651", percent_off: 30.0, dollar_off: nil, merchant_id: 2)
+# coupon18 = Coupon.create!(name: "Project Complete Sale", unique_code: "8481", percent_off: nil, dollar_off: 5, merchant_id: 2)
