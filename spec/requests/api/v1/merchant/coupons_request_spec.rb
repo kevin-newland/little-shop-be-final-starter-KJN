@@ -155,4 +155,23 @@ RSpec.describe "Merchant Coupon endpoints" do
     expect(result[0][:attributes][:name]).to eq(coupon_inactive.name)
     expect(result[0][:attributes][:active]).to eq(false)
   end
+
+  it "Returns an error when a merchant already has 5 active coupons" do
+    merchant1 = Merchant.create!(name: "Test Merchant1")
+
+    coupon_active = Coupon.create(name: "Winter Sale", unique_code: "WS2025", percent_off: 15.0, dollar_off: nil, active: true, merchant_id: merchant1.id)
+    coupon_active = Coupon.create(name: "Winter Sale", unique_code: "WS2026", percent_off: 15.0, dollar_off: nil, active: true, merchant_id: merchant1.id)
+    coupon_active = Coupon.create(name: "Winter Sale", unique_code: "WS2027", percent_off: 15.0, dollar_off: nil, active: true, merchant_id: merchant1.id)
+    coupon_active = Coupon.create(name: "Winter Sale", unique_code: "WS2028", percent_off: 15.0, dollar_off: nil, active: true, merchant_id: merchant1.id)
+    coupon_active = Coupon.create(name: "Winter Sale", unique_code: "WS2029", percent_off: 15.0, dollar_off: nil, active: true, merchant_id: merchant1.id)
+
+    coupon_params = {name: "New Sale", unique_code: "NS2025", percent_off: 35.0, dollar_off: nil, merchant_id: merchant1.id}
+
+    post "/api/v1/merchants/#{merchant1.id}/coupons", params: coupon_params
+    
+    result = JSON.parse(response.body, symbolize_names: true)
+
+    expect(result).to have_key(:error)
+    expect(result[:error]).to eq("this merchant already has 5 active coupons")
+  end
 end

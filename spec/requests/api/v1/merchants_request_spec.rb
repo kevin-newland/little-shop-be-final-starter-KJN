@@ -75,6 +75,26 @@ describe "Merchant endpoints", :type => :request do
       expect(json[:data][1][:attributes][:item_count]).to eq(2)
       expect(json[:data][2][:attributes][:item_count]).to eq(7)
     end
+
+    it "get all merchants and include a count of coupons for each merchant and a count of invoices with coupons applied for each merchant" do
+      merchant1 = Merchant.create!(name: "Test Merchant1")
+      customer = Customer.create!(first_name: "John", last_name: "Doe")
+      coupon2 = Coupon.create(name: "Spring Sale", unique_code: "SPS2025", percent_off: nil, dollar_off: 25.00, merchant_id: merchant1.id)
+  
+      invoice2 = Invoice.create!(customer_id:  customer.id, merchant_id: merchant1.id, coupon_id: coupon2.id, status: "shipped")
+      invoice3 = Invoice.create!(customer_id: customer.id, merchant_id: merchant1.id, coupon_id: coupon2.id, status: "shipped")
+  
+      get "/api/v1/merchants"
+      expect(response.status).to eq(200)
+  
+  
+      results = JSON.parse(response.body, symbolize_names: true)[:data]
+  
+      results.each do |result|
+        expect(result[:attributes][:coupons_count]).to eq(1) 
+        expect(result[:attributes][:invoice_coupon_count]).to eq(2) 
+      end
+    end
   end
 
   describe "get a merchant by id" do
@@ -200,6 +220,5 @@ describe "Merchant endpoints", :type => :request do
       
       expect(response).to have_http_status(:no_content)
     end
-
   end
 end

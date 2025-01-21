@@ -26,3 +26,5 @@ system(cmd)
 # invoice2 = Invoice.create!(customer_id: 12, merchant_id: merchant1.id, coupon_id: coupon1.id, status: "shipped")
 # invoice3 = Invoice.create!(customer_id: 12, merchant_id: merchant2.id, coupon_id: coupon2.id, status: "shipped")
 # invoice4 = Invoice.create!(customer_id: 12, merchant_id: merchant3.id, coupon_id: coupon3.id, status: "shipped")
+# 
+#coupon11 = Coupon.create!(name: "Winter Sale", unique_code: "sdvsdv", percent_off: 15.0, dollar_off: nil, merchant_id: 1)

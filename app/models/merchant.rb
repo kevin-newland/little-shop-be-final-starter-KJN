@@ -40,6 +40,10 @@ class Merchant < ApplicationRecord
     invoices.includes(:coupon)
   end
 
+  def self.add_count_of_coupons__and_invoices
+    left_joins(:coupons, :invoices).select("merchants.*").select("COUNT(DISTINCT coupons.id) AS coupons_count").select("COUNT(DISTINCT invoices.id) FILTER (WHERE invoices.coupon_id IS NOT NULL) AS invoice_coupon_count").group("merchants.id")
+  end
+
   def self.find_all_by_name(name)
     Merchant.where("name iLIKE ?", "%#{name}%")
   end
