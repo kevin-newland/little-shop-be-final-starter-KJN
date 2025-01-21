@@ -92,5 +92,20 @@ describe Merchant, type: :model do
       expect(merchant.invoices_filtered_by_status("returned")).to eq([inv_5_returned])
       expect(other_merchant.invoices_filtered_by_status("packaged")).to eq([inv_4_packaged])
     end
+
+    it "returns invoices with coupon details for a merchant" do
+      merchant1 = Merchant.create!(name: "Test Merchant1")
+      customer1 = Customer.create!(first_name: "Papa", last_name: "Gino")
+
+      coupon1 = Coupon.create(name: "Winter Sale", unique_code: "WS2025", percent_off: 15.0, dollar_off: nil, merchant_id: merchant1.id)
+
+      invoice1 = Invoice.create!(customer_id: customer1.id, merchant_id: merchant1.id, coupon_id: coupon1.id, status: "shipped")
+      invoice2 = Invoice.create!(customer_id: customer1.id, merchant_id: merchant1.id, coupon_id: nil , status: "shipped")
+
+      result = merchant1.add_coupon_invoices
+
+      expect(result[0]).to eq(invoice1)
+      expect(result[1]).to eq(invoice2)
+    end
   end
 end

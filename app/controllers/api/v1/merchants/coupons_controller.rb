@@ -1,4 +1,6 @@
 class Api::V1::Merchants::CouponsController < ApplicationController
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found
+  rescue_from ActiveRecord::RecordInvalid, with: :not_valid
   def show
     merchant = Merchant.find(params[:merchant_id])
     coupon = merchant.coupons.find(params[:id])
@@ -17,6 +19,10 @@ class Api::V1::Merchants::CouponsController < ApplicationController
 
   def create
     merchant = Merchant.find(params[:merchant_id])
+    if merchant.coupons.active_coupons.count >= 5
+      render json: {error: "this merchant already has 5 active coupons"}
+      return
+    end
     coupons = merchant.coupons.create!(coupon_params)
     render json: CouponSerializer.new(coupons), status: :created
   end

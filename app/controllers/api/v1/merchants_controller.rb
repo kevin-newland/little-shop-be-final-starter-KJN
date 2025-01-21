@@ -1,7 +1,7 @@
 class Api::V1::MerchantsController < ApplicationController
 
   def index
-    merchants = Merchant.all
+    merchants = Merchant.add_count_of_coupons__and_invoices
 
     if params[:sorted].present? && params[:sorted] == "age"
       merchants = merchants.sorted_by_creation
